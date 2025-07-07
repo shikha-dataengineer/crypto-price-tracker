@@ -7,4 +7,4 @@ load_dotenv("config/.env")
 client = bigquery.Client(project=os.getenv("GCP_PROJECT"))  # Step 2: Run SQL
 query = open("bigquery/transform_query.sql").read()
 client.query(query).result()
-print("✅ Transformation query executed.")
+print("Transformation query executed.")
