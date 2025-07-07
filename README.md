@@ -1,8 +1,9 @@
 # Real-Time Cryptocurrency Price Tracker ETL Pipeline
 
 ## Overview
-This project ingests historical cryptocurrency price data into BigQuery for real-time analytics and forecasting.
+This project implements an automated ETL pipeline to load, clean, and visualize real-time cryptocurrency price data using Google Cloud Platform (GCP) tools like **Cloud Storage**, **BigQuery**, and **Looker Studio**.
 
+## Dataset Overview
 The dataset contains historical OHLC (Open, High, Low, Close) price data for over 50 cryptocurrencies from **May 2013 to October 2022** on a daily basis. Prices are represented in USD. The data is stored in CSV format for fast and efficient loading.
 
 You can find the original dataset on Kaggle here:  
@@ -23,15 +24,41 @@ You can find the original dataset on Kaggle here:
 | `date`       | Date derived from the timestamp                                                             |
 
 
-## Progress So Far
-1. Dataset sourced from Kaggle  
-2. GCS bucket created and dataset uploaded via Cloud Shell  
-3. BigQuery dataset (`crypto_analytics`) created  
+## Project Overview
+1. Source: Historical crypto price data from Kaggle
+2. Objective: Build a clean, analytics-ready dataset for crypto market trends
+3. Tools used:
+  - Google Cloud Storage (GCS)
+  - BigQuery (SQL transforms & storage)
+  - Python (ETL orchestration)
+  - Looker Studio (Visualization)
 
-## Next Steps (Automated)
-- Loaded CSV data from GCS into BigQuery  
-- Run SQL transformations for data cleaning and enrichment  
-- Visualize results in Looker Studio 
+## ETL Pipeline Overview
+
+### 1. **Data Ingestion**
+- CSV uploaded to:  
+  `gs://crypto-price-csv-bucket-2025/crypto_dataset.csv`
+- Loaded into BigQuery table:  
+  `crypto_analytics.final_crypto_prices`
+
+### 2. **Data Transformation**
+- Applied SQL cleaning via `bigquery/transform_query.sql`:
+  - Parsed `timestamp` into `date` and `time`
+  - Checked `NULL` rows if any
+  - Deduplicated by `crypto_name + date`
+  - Created clean, partitioned final table for querying
+ 
+### 3. **Visualized results in Looker Studio**
+   - Connected to BigQuery table: `crypto_analytics.cleaned_crypto_prices`
+   - Created charts:
+     - 📈 Line chart of `close` price over time
+     - 📊 Bar chart of `volume` by `crypto_name`
+     - 💰 Line chart of Market Cap trend
+     - 🥧 Pie chart Market share by Market cap
+     - ✨ Scatter Plot for Volume vs Market cap
+
+### 4. **ETL Automation**
+- Script: [`etl/etl_pipeline.py`](etl/etl_pipeline.py)
 
 ## How to Run
 Run the ETL pipeline with:
