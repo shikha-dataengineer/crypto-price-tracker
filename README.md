@@ -3,6 +3,9 @@
 ## Overview
 This project implements an automated ETL pipeline to load, clean, and visualize real-time cryptocurrency price data using Google Cloud Platform (GCP) tools like **Cloud Storage**, **BigQuery**, and **Looker Studio**.
 
+## Problem
+Analyzing large volumes of crypto market data manually is slow and inefficient.
+
 ## Dataset Overview
 The dataset contains historical OHLC (Open, High, Low, Close) price data for over 50 cryptocurrencies from **May 2013 to October 2022** on a daily basis. Prices are represented in USD. The data is stored in CSV format for fast and efficient loading.
 
