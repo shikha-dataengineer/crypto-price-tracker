@@ -1,4 +1,4 @@
-# Real-Time Cryptocurrency Price Tracker ETL Pipeline
+# Cryptocurrency Price Analysis Pipeline on Google Cloud
 
 ## Overview
 This project implements an automated ETL pipeline to load, clean, and visualize real-time cryptocurrency price data using Google Cloud Platform (GCP) tools like **Cloud Storage**, **BigQuery**, and **Looker Studio**.
@@ -57,6 +57,9 @@ You can find the original dataset on Kaggle here:
      - 🥧 Pie chart Market share by Market cap
      - ✨ Scatter Plot for Volume vs Market cap
 
+## Result
+Created a reusable, scalable pipeline for financial data analytics using GCP.
+
 ### 4. **ETL Automation**
 - Script: [`etl/etl_pipeline.py`](etl/etl_pipeline.py)
 
@@ -65,3 +68,5 @@ Run the ETL pipeline with:
 
 ```bash
 python etl/etl_pipeline.py
+
+
