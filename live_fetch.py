@@ -6,7 +6,7 @@ genuinely real-time component alongside the historical dataset.
 
 import os
 import requests
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from google.cloud import bigquery
 
 COINS = ["bitcoin", "ethereum", "dogecoin", "cardano", "solana"]
@@ -45,6 +45,9 @@ def ensure_table(client, table_id):
         bigquery.SchemaField("fetched_at", "TIMESTAMP"),
     ]
     table = bigquery.Table(table_id, schema=schema)
+    # Sandbox-mode (free, no billing) projects require tables to have
+    # an expiration date. 59 days keeps it safely under the 60-day limit.
+    table.expires = datetime.now(timezone.utc) + timedelta(days=59)
     client.create_table(table, exists_ok=True)
 
 def main():
