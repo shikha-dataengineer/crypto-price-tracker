@@ -32,7 +32,7 @@ WITH ranked_data AS (
     _PARTITIONTIME,
     ROW_NUMBER() OVER (PARTITION BY crypto_name, timestamp ORDER BY _PARTITIONTIME DESC) AS rn
   FROM `crypto-price-data-55010.crypto_analytics.crypto_prices`
-  WHERE TIMESTAMP_TRUNC(_PARTITIONTIME, DAY) = TIMESTAMP("2025-07-02")
+  WHERE TIMESTAMP_TRUNC(_PARTITIONTIME, DAY) = TIMESTAMP(CURRENT_DATE())
 ),
 validated_data AS (
   SELECT
