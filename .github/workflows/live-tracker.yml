@@ -1,0 +1,31 @@
+name: Live Crypto Tracker
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *'   # runs every hour, at minute 0
+
+jobs:
+  fetch-live-prices:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Fetch live prices
+        env:
+          GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
+        run: python live_fetch.py
