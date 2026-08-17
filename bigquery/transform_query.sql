@@ -1,4 +1,5 @@
 -- Validation check Performed
+--Before running: replace YOUR_PROJECT_ID below with your own GCP project ID
 
 -- A) NULL CHECKS
 SELECT
@@ -10,14 +11,14 @@ SELECT
   COUNTIF(close IS NULL) AS close_nulls,
   COUNTIF(volume IS NULL) AS volume_nulls,
   COUNTIF(marketCap IS NULL) AS marketCap_nulls
-FROM `crypto-price-data-55010.crypto_analytics.crypto_prices`
+FROM `YOUR_PROJECT_ID.crypto_analytics.crypto_prices`
 WHERE _PARTITIONTIME BETWEEN TIMESTAMP("2013-01-01") AND TIMESTAMP("2022-12-31");
 
 
 
 --B) Data Cleaning and deduplication query
 
-CREATE OR REPLACE TABLE `crypto-price-data-55010.crypto_analytics.cleaned_crypto_prices` AS
+CREATE OR REPLACE TABLE `YOUR_PROJECT_ID.crypto_analytics.cleaned_crypto_prices` AS
 WITH ranked_data AS (
   SELECT
     crypto_name,
@@ -31,7 +32,7 @@ WITH ranked_data AS (
     marketCap,
     _PARTITIONTIME,
     ROW_NUMBER() OVER (PARTITION BY crypto_name, timestamp ORDER BY _PARTITIONTIME DESC) AS rn
-  FROM `crypto-price-data-55010.crypto_analytics.crypto_prices`
+  FROM `YOUR_PROJECT_ID.crypto_analytics.crypto_prices`
   WHERE TIMESTAMP_TRUNC(_PARTITIONTIME, DAY) = TIMESTAMP(CURRENT_DATE())
 ),
 validated_data AS (
