@@ -1,7 +1,7 @@
 # Cryptocurrency Price Analysis & Live Tracking Pipeline on Google Cloud
 
 ## Overview
-This project combines two things: an automated ETL pipeline that loads, cleans, and visualizes historical daily cryptocurrency price data using Google Cloud Platform (GCP) tools like Cloud Storage, BigQuery, and Looker Studio — and a live price tracker that fetches current crypto prices every hour and logs them to this repository.
+This project combines two things: an automated ETL pipeline that loads, cleans, and visualizes historical daily cryptocurrency price data using Google Cloud Platform (GCP) tools like Cloud Storage, BigQuery, and Looker Studio - and a live price tracker that fetches current crypto prices every hour and logs them to this repository.
 
 ## Who this is for
 This project is a lightweight template for anyone who wants to (a) load historical crypto OHLC data into Google Cloud (BigQuery) and build a clean, queryable, partitioned dataset with a Looker Studio dashboard on top, and (b) maintain a simple, free, ongoing log of live crypto prices without needing any cloud billing. Useful for analysts, students, or data engineers prototyping financial data pipelines.
@@ -58,7 +58,7 @@ Original dataset on Kaggle: [Crypto Price Prediction Dataset by shashwat1001](ht
 - The live tracker itself runs as a second, independent scheduled workflow
 
 ## Result
-A reusable, tested pipeline combining historical financial data analytics on GCP with a free, ongoing live price log — with no paid infrastructure required for the live component.
+A reusable, tested pipeline combining historical financial data analytics on GCP with a free, ongoing live price log with no paid infrastructure required for the live component.
 
 ## Setup
 
