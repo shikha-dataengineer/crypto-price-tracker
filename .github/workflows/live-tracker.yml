@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: '0 * * * *'   # runs every hour, at minute 0
 
+permissions:
+  contents: write
+
 jobs:
   fetch-live-prices:
     runs-on: ubuntu-latest
@@ -18,14 +21,15 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+        run: pip install requests
 
       - name: Fetch live prices
-        env:
-          GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
         run: python live_fetch.py
+
+      - name: Commit and push updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/live_prices.csv
+          git diff --staged --quiet || git commit -m "Update live crypto prices"
+          git push
