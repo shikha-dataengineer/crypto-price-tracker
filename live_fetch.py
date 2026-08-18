@@ -1,15 +1,18 @@
 """
 Fetches live cryptocurrency prices from the free CoinGecko API
-and appends them to a BigQuery table, so this project has a
-genuinely real-time component alongside the historical dataset.
+and appends them as new rows to data/live_prices.csv, giving this
+project a genuinely real-time component alongside the historical
+BigQuery dataset. No cloud billing required — this just writes
+to a file inside the repo itself.
 """
 
+import csv
 import os
 import requests
-from datetime import datetime, timezone, timedelta
-from google.cloud import bigquery
+from datetime import datetime, timezone
 
 COINS = ["bitcoin", "ethereum", "dogecoin", "cardano", "solana"]
+OUTPUT_FILE = "data/live_prices.csv"
 
 def fetch_live_prices():
     url = "https://api.coingecko.com/api/v3/simple/price"
@@ -36,35 +39,20 @@ def build_rows(data):
         })
     return rows
 
-def ensure_table(client, table_id):
-    schema = [
-        bigquery.SchemaField("crypto_name", "STRING"),
-        bigquery.SchemaField("price_usd", "FLOAT"),
-        bigquery.SchemaField("market_cap", "FLOAT"),
-        bigquery.SchemaField("volume_24h", "FLOAT"),
-        bigquery.SchemaField("fetched_at", "TIMESTAMP"),
-    ]
-    table = bigquery.Table(table_id, schema=schema)
-    # Sandbox-mode (free, no billing) projects require tables to have
-    # an expiration date. 59 days keeps it safely under the 60-day limit.
-    table.expires = datetime.now(timezone.utc) + timedelta(days=59)
-    client.create_table(table, exists_ok=True)
+def append_to_csv(rows):
+    os.makedirs("data", exist_ok=True)
+    file_exists = os.path.isfile(OUTPUT_FILE)
+    with open(OUTPUT_FILE, "a", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=["crypto_name", "price_usd", "market_cap", "volume_24h", "fetched_at"])
+        if not file_exists:
+            writer.writeheader()
+        writer.writerows(rows)
 
 def main():
-    project = os.getenv("GCP_PROJECT")
-    dataset = os.getenv("BQ_DATASET", "crypto_analytics")
-    table_id = f"{project}.{dataset}.live_crypto_prices"
-
-    client = bigquery.Client(project=project)
-    ensure_table(client, table_id)
-
     data = fetch_live_prices()
     rows = build_rows(data)
-
-    errors = client.insert_rows_json(table_id, rows)
-    if errors:
-        raise RuntimeError(f"Failed to insert rows: {errors}")
-    print(f"Inserted {len(rows)} live price rows into {table_id}")
+    append_to_csv(rows)
+    print(f"Appended {len(rows)} live price rows to {OUTPUT_FILE}")
 
 if __name__ == "__main__":
     main()
